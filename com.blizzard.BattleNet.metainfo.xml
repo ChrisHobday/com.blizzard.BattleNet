@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component type="desktop-application">
+  <id>com.blizzard.BattleNet</id>
+  
+  <name>BattleNet</name>
+  <summary>Blizzard BattleNet launcher</summary>
+  
+  <metadata_license>CC-BY-SA-3.0</metadata_license>
+  <project_license>GPL-2.0+</project_license>
+  
+  <supports>
+    <control>pointing</control>
+    <control>keyboard</control>
+    <control>gamepad</control>
+  </supports>
+  
+  <description>
+    <p>
+      Blizzard BattleNet launcher ran through WINE.
+    </p>
+  </description>
+
+  <releases>
+    <release version="1" date="2024-06-17"/>
+  </releases>
+  
+  <launchable type="desktop-id">com.blizzard.BattleNet.desktop</launchable>
+</component>
