@@ -30,10 +30,6 @@ modules:
     buildsystem: simple
     sources:
       - type: file
-        path: Hello32.exe
-      - type: file
-        path: Hello64.exe
-      - type: file
         url: https://www.battle.net/download/getInstallerForGame?os=win&version=LIVE&gameProgram=BATTLENET_APP
         sha256: 002f33fee7b8a159058368b7e93e492931c4ca72e90660bdb2691bcd62fedd3c
         dest-filename: BattleNetSetup.exe
