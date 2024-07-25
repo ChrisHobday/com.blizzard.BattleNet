@@ -18,13 +18,13 @@ finish-args:
   - --allow=multiarch
   - --filesystem=xdg-run/gamescope-0:ro # Required for Gamescope on Steam Deck
 inherit-extensions:
+  - org.freedesktop.Platform.Compat.i386
+  - org.freedesktop.Platform.GL32
+  - org.freedesktop.Platform.ffmpeg-full
+  - org.freedesktop.Platform.ffmpeg_full.i386
   - org.winehq.Wine.gecko
   - org.winehq.Wine.mono
   - org.winehq.Wine.DLLs
-add-extensions:
-  org.freedesktop.Platform.Compat.i386:
-    directory: lib/i386-linux-gnu
-    version: *runtime-version
 modules:
   - name: BattleNet
     buildsystem: simple
