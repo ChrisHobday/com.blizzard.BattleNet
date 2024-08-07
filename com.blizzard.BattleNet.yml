@@ -10,6 +10,11 @@ command: BattleNetWrapper
 finish-args:
   - --device=all
   - --filesystem=host:ro
+  - --env=DXVK_HUD=compiler
+  - --env=DXVK_STATE_CACHE_PATH=/var/data
+  - --env=__GL_SHADER_DISK_CACHE=1
+  - --env=__GL_SHADER_DISK_CACHE_PATH=/var/data
+  - --env=__GL_SHADER_DISK_CACHE_SKIP_CLEANUP=1
   - --env=WINE_SIMULATE_WRITECOPY=1
   - --env=STAGING_WRITECOPY=1
   - --env=STAGING_SHARED_MEMORY=1
@@ -53,6 +58,10 @@ modules:
 
             echo "Disable crash dialog..."
             wine reg add "HKEY_CURRENT_USER\Software\Wine\WineDbg" /v "ShowCrashDialog" /t "REG_DWORD" /d "00000000" /f
+
+            WINE_SIMULATE_WRITECOPY=1
+            STAGING_WRITECOPY=1
+            STAGING_SHARED_MEMORY=1
 
             echo "Launching BattleNetSetup.exe"
             wine /app/bin/BattleNetSetup.exe
