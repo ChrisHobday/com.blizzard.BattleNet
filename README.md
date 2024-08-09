@@ -1,5 +1,6 @@
 # BattleNet Flatpak (WIP)
 ## Installing
+- Download and install WineStaging Flatpaks from https://github.com/ChrisHobday/org.winehq.WineStaging/releases (This Flatpak uses them as a base)
 - Download BattleNet.flatpak from releases
 - Install BattleNet.flatpak (sudo needed for installing single use Flatpak bundle)
 ```console
@@ -16,7 +17,7 @@ flatpak run com.blizzard.BattleNet
 flatpak remove com.blizzard.BattleNet
 ```
 ## Downloading/Cloning this repo
-- Click the green button to download zip and extract once downloaded or clone repo with
+- Switch the branch to WineStaging, using the dropdown at the top left, then C\click the green button to download zip and extract once downloaded or clone repo with
 ```console
 git clone --recurse-submodules https://github.com/ChrisHobday/com.blizzard.BattleNet
 ```
@@ -28,6 +29,10 @@ flatpak install flathub org.flatpak.Builder
 - Install the platform this Flatpak will be using
 ```console
 flatpak install flathub org.freedesktop.Platform//23.08 org.freedesktop.Sdk//23.08
+```
+- Switch to WineStaging branch (If you cloned repo) (Run this from within the com.blizzard.BattleNet directory)
+```console
+git checkout WineStaging
 ```
 - Build the Flatpak with flatpak-builder (Run this from within the com.blizzard.BattleNet directory)
 ```console
@@ -58,3 +63,4 @@ flatpak run --command=sh com.blizzard.BattleNet
 - User cache directory               = ~/.var/app/com.blizzard.BattleNet/cache/
 - User config directory              = ~/.var/app/com.blizzard.BattleNet/config/
 - User data directory                = ~/.var/app/com.blizzard.BattleNet/data/
+- Wine prefix                        = ~/.var/app/com.blizzard.BattleNet/data/WinePrefix
