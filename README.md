@@ -1,4 +1,4 @@
-# BattleNet Flatpak (WIP)
+# Unofficial Blizzard BattleNet Flatpak
 ## Installing
 - Download and install WineStaging Flatpaks from https://github.com/ChrisHobday/org.winehq.WineStaging/releases (This Flatpak uses them as a base)
 - Download BattleNet.flatpak from releases
