@@ -5,25 +5,18 @@ runtime-version: &runtime-version '23.08'
 base: org.winehq.WineStaging
 base-version: stable-23.08
 command: BattleNetWrapper
-# rename-desktop-file: com.blizzard.BattleNet.desktop
-# rename-icon: BattleNet
+rename-desktop-file: BattleNet.desktop
+rename-icon: BattleNet
 finish-args:
   - --device=all
   - --filesystem=host:ro
-  - --env=DXVK_HUD=compiler
-  - --env=DXVK_STATE_CACHE_PATH=/var/data
-  - --env=__GL_SHADER_DISK_CACHE=1
-  - --env=__GL_SHADER_DISK_CACHE_PATH=/var/data
-  - --env=__GL_SHADER_DISK_CACHE_SKIP_CLEANUP=1
-  - --env=WINE_SIMULATE_WRITECOPY=1
-  - --env=STAGING_WRITECOPY=1
-  - --env=STAGING_SHARED_MEMORY=1
+  - --filesystem=xdg-run/app/com.discordapp.Discord:create # Required for setting up Discord rich presence
+  - --filesystem=xdg-run/gamescope-0:ro # Required for Gamescope on Steam Deck
   - --socket=pulseaudio
   - --socket=x11
   - --share=network
   - --share=ipc
   - --allow=multiarch
-  - --filesystem=xdg-run/gamescope-0:ro # Required for Gamescope on Steam Deck
 inherit-extensions:
   - org.freedesktop.Platform.Compat.i386
   - org.freedesktop.Platform.GL32
@@ -33,38 +26,91 @@ inherit-extensions:
   - org.winehq.WineStaging.mono
   - org.winehq.WineStaging.DLLs
 modules:
+  # Icoutils, needed for extracting .ico from BattleNetSetup.exe
+  - name: Icoutils
+    buildsystem: simple
+    sources:
+      - type: archive
+        url: http://savannah.nongnu.org/download/icoutils/icoutils-0.32.3.tar.bz2
+        sha256: 17abe02d043a253b68b47e3af69c9fc755b895db68fdc8811786125df564c6e0
+    build-commands:
+      - |
+        echo "Configuring and make Icoutls"
+        ./configure --prefix=${FLATPAK_DEST}
+        make
+
+        echo "Installing Icoutils"
+        make install
+  # ImageMagick, needed for converting .ico extracted from exe to .png
+  - name: ImageMagick
+    buildsystem: simple
+    sources:
+      - type: git
+        url: https://github.com/ImageMagick/ImageMagick.git
+        tag: 7.1.1-36
+    build-commands:
+      - |
+        echo "Configuring and make ImageMagick"
+        ./configure --prefix=${FLATPAK_DEST}
+        make
+
+        echo "Installing ImageMagick"
+        make install
   - name: BattleNet
     buildsystem: simple
     sources:
+      # The Windows exe that will be ran with wine to install BattleNet (If it is already installed, the exe instead launches BattleNet)
       - type: file
         url: https://www.battle.net/download/getInstallerForGame?os=win&version=LIVE&gameProgram=BATTLENET_APP
         sha256: 002f33fee7b8a159058368b7e93e492931c4ca72e90660bdb2691bcd62fedd3c
         dest-filename: BattleNetSetup.exe
+      # Shell script that extracts BattleNet icon from the BattleNetSetup.exe, converts it to different sized png files and move those to the correct icon locations
+      - type: shell
+        commands:
+          - |
+            echo "Extracting BattleNet icon from BattleNetSetup.exe"
+            wrestool -x --output=BattleNet.ico -t14 BattleNetSetup.exe
+
+            echo "Converting BattleNet.ico to BattleNet.png"
+            convert BattleNet.ico BattleNet.png
+
+            echo "Moving BatleNet-6.png to /app/share/icons/hicolor/64x64/apps/BattleNet.png"
+            mv BattleNet-6.png /app/share/icons/hicolor/64x64/apps/BattleNet.png
+
+            echo "Moving BatleNet-0.png to /app/share/icons/hicolor/128x128/apps/BattleNet.png"
+            mv BattleNet-0.png /app/share/icons/hicolor/128x128/apps/BattleNet.png
+
+            echo "Moving BatleNet-3.png to /app/share/icons/hicolor/256x256/apps/BattleNet.png"
+            mv BattleNet-3.png /app/share/icons/hicolor/256x256/apps/BattleNet.png
+      # Shell script that creates a BattleNet.desktop file in the correct location
+      - type: shell
+        commands:
+          - |
+            echo "Creating /app/share/applications/BattleNet.desktop file"
+            touch /app/share/applications/BattleNet.desktop
+
+            echo "Writing contents to /app/share/applications/BattleNet.desktop file"
+            echo "[Desktop Entry]
+            Type=Application
+            Name=BattleNet
+            GenericName=BattleNet
+            Comment=Blizzard BattleNet launcher (Flatpak)
+            Exec=BattleNetWrapper
+            Categories=Game;
+            Icon=BattleNet
+            Keywords=Blizzard;BattleNet;Battle.net;Hearthstone;World of Warcraft;StarCraft;Warcraft;Overwatch;Diablo;Heroes of the Storm;Warcraft Rumble" >> /app/share/applications/BattleNet.desktop
+      # Script that is ran everytime the final Flatpak is ran, which sets up Discord rich presence and than runs the BattleNetSetup.exe with wine
       - type: script
         commands:
           - |
-            # echo "Setting up Discord rich presence"
-            # for i in {0..9}; do
-            #   test -S $XDG_RUNTIME_DIR/discord-ipc-$i ||
-            #     ln -sf {app/com.discordapp.Discord,$XDG_RUNTIME_DIR}/discord-ipc-$i;
-            # done
-
-            echo "Running wineboot --init"
-            wineboot --init
-
-            echo "Performing tweak(s)..."
-            echo "Disable winemenubuilder.exe..."
-            wine reg add "HKEY_CURRENT_USER\Software\Wine\DllOverrides" /v "winemenubuilder.exe" /d "" /f
-
-            echo "Disable crash dialog..."
-            wine reg add "HKEY_CURRENT_USER\Software\Wine\WineDbg" /v "ShowCrashDialog" /t "REG_DWORD" /d "00000000" /f
-
-            WINE_SIMULATE_WRITECOPY=1
-            STAGING_WRITECOPY=1
-            STAGING_SHARED_MEMORY=1
+            echo "Setting up Discord rich presence"
+            for i in {0..9}; do
+              test -S $XDG_RUNTIME_DIR/discord-ipc-$i ||
+                ln -sf {app/com.discordapp.Discord,$XDG_RUNTIME_DIR}/discord-ipc-$i;
+            done
 
             echo "Launching BattleNetSetup.exe"
-            wine /app/bin/BattleNetSetup.exe WINE_SIMULATE_WRITECOPY=1
+            wine /app/bin/BattleNetSetup.exe
         dest-filename: BattleNetWrapper
     build-commands:
       - |
