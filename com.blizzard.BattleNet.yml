@@ -59,6 +59,9 @@ modules:
   - name: BattleNet
     buildsystem: simple
     sources:
+      # Metadata file for Flatpak repos
+      - type: file
+        path: com.blizzard.BattleNet.metainfo.xml
       # The Windows exe that will be ran with wine to install BattleNet (If it is already installed, the exe instead launches BattleNet)
       - type: file
         url: https://www.battle.net/download/getInstallerForGame?os=win&version=LIVE&gameProgram=BATTLENET_APP
@@ -114,6 +117,9 @@ modules:
         dest-filename: BattleNetWrapper
     build-commands:
       - |
+        echo "Installing com.blizzard.BattleNet.metainfo.xml in /app/share/metainfo/"
+        install -Dm644 -t /app/share/metainfo/ com.blizzard.BattleNet.metainfo.xml
+
         echo "Moving BattleNetSetup.exe to /app/bin"
         mv BattleNetSetup.exe /app/bin
 
