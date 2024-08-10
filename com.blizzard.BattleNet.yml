@@ -77,13 +77,13 @@ modules:
             echo "Converting BattleNet.ico to BattleNet.png"
             convert BattleNet.ico BattleNet.png
 
-            echo "Moving BatleNet-6.png to /app/share/icons/hicolor/64x64/apps/BattleNet.png"
+            echo "Moving BattleNet-6.png to /app/share/icons/hicolor/64x64/apps/BattleNet.png"
             mv BattleNet-6.png /app/share/icons/hicolor/64x64/apps/BattleNet.png
 
-            echo "Moving BatleNet-0.png to /app/share/icons/hicolor/128x128/apps/BattleNet.png"
+            echo "Moving BattleNet-0.png to /app/share/icons/hicolor/128x128/apps/BattleNet.png"
             mv BattleNet-0.png /app/share/icons/hicolor/128x128/apps/BattleNet.png
 
-            echo "Moving BatleNet-3.png to /app/share/icons/hicolor/256x256/apps/BattleNet.png"
+            echo "Moving BattleNet-3.png to /app/share/icons/hicolor/256x256/apps/BattleNet.png"
             mv BattleNet-3.png /app/share/icons/hicolor/256x256/apps/BattleNet.png
       # Shell script that creates a BattleNet.desktop file in the correct location
       - type: shell
@@ -102,7 +102,7 @@ modules:
             Categories=Game;
             Icon=BattleNet
             Keywords=Blizzard;BattleNet;Battle.net;Hearthstone;World of Warcraft;StarCraft;Warcraft;Overwatch;Diablo;Heroes of the Storm;Warcraft Rumble" >> /app/share/applications/BattleNet.desktop
-      # Script that is ran everytime the final Flatpak is ran, which sets up Discord rich presence and than runs the BattleNetSetup.exe with wine
+      # Script that is ran everytime the final Flatpak is ran, which sets up Discord rich presence and than runs the BattleNetSetup.exe with Wine
       - type: script
         commands:
           - |
