@@ -17,7 +17,7 @@ flatpak run com.blizzard.BattleNet
 flatpak remove com.blizzard.BattleNet
 ```
 ## Downloading/Cloning this repo
-- Switch the branch to WineStaging, using the dropdown at the top left, then C\click the green button to download zip and extract once downloaded or clone repo with
+- Switch the branch to WineStaging, using the dropdown at the top left, then click the green button to download zip and extract once downloaded or clone repo with
 ```console
 git clone --recurse-submodules https://github.com/ChrisHobday/com.blizzard.BattleNet
 ```
