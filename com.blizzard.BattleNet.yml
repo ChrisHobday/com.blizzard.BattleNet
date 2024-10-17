@@ -41,6 +41,7 @@ modules:
 
         echo "Installing Icoutils"
         make install
+
   # ImageMagick, needed for converting .ico extracted from exe to .png
   - name: ImageMagick
     buildsystem: simple
@@ -56,17 +57,21 @@ modules:
 
         echo "Installing ImageMagick"
         make install
+
+  # BattleNet Setup exe, shell scripts that extract and convert BattleNet icon and a script that installs/launches BattleNet
   - name: BattleNet
     buildsystem: simple
     sources:
       # Metadata file for Flatpak repos
       - type: file
         path: com.blizzard.BattleNet.metainfo.xml
+
       # The Windows exe that will be ran with wine to install BattleNet (If it is already installed, the exe instead launches BattleNet)
       - type: file
         url: https://www.battle.net/download/getInstallerForGame?os=win&version=LIVE&gameProgram=BATTLENET_APP
         sha256: 002f33fee7b8a159058368b7e93e492931c4ca72e90660bdb2691bcd62fedd3c
         dest-filename: BattleNetSetup.exe
+
       # Shell script that extracts BattleNet icon from the BattleNetSetup.exe, converts it to different sized png files and move those to the correct icon locations
       - type: shell
         commands:
@@ -85,6 +90,7 @@ modules:
 
             echo "Moving BattleNet-3.png to /app/share/icons/hicolor/256x256/apps/BattleNet.png"
             mv BattleNet-3.png /app/share/icons/hicolor/256x256/apps/BattleNet.png
+
       # Shell script that creates a BattleNet.desktop file in the correct location
       - type: shell
         commands:
@@ -102,7 +108,8 @@ modules:
             Categories=Game;
             Icon=BattleNet
             Keywords=Blizzard;BattleNet;Battle.net;Hearthstone;World of Warcraft;StarCraft;Warcraft;Overwatch;Diablo;Heroes of the Storm;Warcraft Rumble" >> /app/share/applications/BattleNet.desktop
-      # Script that is ran everytime the final Flatpak is ran, which sets up Discord rich presence and than runs the BattleNetSetup.exe with Wine
+
+      # Script that is ran everytime the final Flatpak is ran, which sets up Discord rich presence and then runs the BattleNetSetup.exe with Wine
       - type: script
         commands:
           - |
@@ -115,6 +122,7 @@ modules:
             echo "Launching BattleNetSetup.exe"
             wine /app/bin/BattleNetSetup.exe
         dest-filename: BattleNetWrapper
+
     build-commands:
       - |
         echo "Installing com.blizzard.BattleNet.metainfo.xml in /app/share/metainfo/"

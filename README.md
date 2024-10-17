@@ -1,6 +1,5 @@
 # Unofficial Blizzard BattleNet Flatpak
 ## Installing
-- Download and install WineStaging Flatpaks from https://github.com/ChrisHobday/org.winehq.WineStaging/releases (This Flatpak uses them as a base)
 - Download BattleNet.flatpak from releases
 - Install BattleNet.flatpak (sudo needed for installing single use Flatpak bundle)
 ```console
@@ -30,6 +29,7 @@ flatpak install flathub org.flatpak.Builder
 ```console
 flatpak install flathub org.freedesktop.Platform//23.08 org.freedesktop.Sdk//23.08
 ```
+- Download and install WineStaging Flatpaks from https://github.com/ChrisHobday/org.winehq.WineStaging/releases (This Flatpak uses them as a base)
 - Switch to WineStaging branch (If you cloned repo) (Run this from within the com.blizzard.BattleNet directory)
 ```console
 git checkout WineStaging
