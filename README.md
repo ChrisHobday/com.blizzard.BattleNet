@@ -1,9 +1,9 @@
-# Unofficial Blizzard BattleNet Flatpak
+# Blizzard BattleNet Flatpak (Unofficial)
 ## Installing
-- Download BattleNet.flatpak from releases
-- Install BattleNet.flatpak (sudo needed for installing single use Flatpak bundle)
+- Download com.blizzard.BattleNet.flatpak from releases
+- Install com.blizzard.BattleNet.flatpak (sudo needed for installing single use Flatpak bundle)
 ```console
-sudo flatpak install BattleNet.flatpak
+sudo flatpak install com.blizzard.BattleNet.flatpak
 ```
 ## Launching
 - Launch the BattleNet Flatpak (Either search for the app in your menu and click it) or
@@ -46,7 +46,7 @@ flatpak run org.flatpak.Builder --force-clean --repo=repo --user --install build
 ## Building single use Flatpak bundle like in the releases (After having followed the Building steps above)
 - Build the Flatpak bundle (Run this from within the com.blizzard.BattleNet directory after having followed the Building steps above)
 ```console
-flatpak build-bundle repo BattleNet.flatpak com.blizzard.BattleNet
+flatpak build-bundle repo com.blizzard.BattleNet.flatpak com.blizzard.BattleNet
 ```
 ## Troubleshooting
 - Check if Flatpak is installed

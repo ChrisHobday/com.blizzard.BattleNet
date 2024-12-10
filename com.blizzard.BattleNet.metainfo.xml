@@ -3,7 +3,7 @@
   <id>com.blizzard.BattleNet</id>
   
   <name>BattleNet</name>
-  <summary>Unofficial Blizzard BattleNet launcher</summary>
+  <summary>Blizzard BattleNet launcher (Unofficial)</summary>
   
   <metadata_license>CC-BY-SA-3.0</metadata_license>
   <project_license>GPL-2.0+</project_license>
@@ -16,11 +16,12 @@
   
   <description>
     <p>
-      Unofficial Blizzard BattleNet launcher Flatpak (ran with WineStaging) 
+      Blizzard BattleNet launcher Flatpak (Unofficial)
     </p>
   </description>
 
   <releases>
+    <release version="2" date="2024-12-01"/>
     <release version="1" date="2024-08-09"/>
   </releases>
   

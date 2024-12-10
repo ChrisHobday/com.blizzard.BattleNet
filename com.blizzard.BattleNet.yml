@@ -1,7 +1,7 @@
 app-id: com.blizzard.BattleNet
 sdk: org.freedesktop.Sdk
 runtime: org.freedesktop.Platform
-runtime-version: &runtime-version '23.08'
+runtime-version: &runtime-version '24.08'
 base: org.winehq.WineStaging
 base-version: stable-23.08
 command: BattleNetWrapper
