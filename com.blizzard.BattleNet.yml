@@ -74,6 +74,10 @@ modules:
       - type: file
         path: com.blizzard.BattleNet.metainfo.xml
 
+      # Desktop file
+      - type: file
+        path: BattleNet.desktop
+
       # The Windows exe that will be ran with wine to install BattleNet (If it is already installed, the exe instead launches BattleNet)
       - type: file
         url: https://www.battle.net/download/getInstallerForGame?os=win&version=LIVE&gameProgram=BATTLENET_APP
@@ -99,24 +103,6 @@ modules:
             echo "Moving BattleNet-3.png to /app/share/icons/hicolor/256x256/apps/BattleNet.png"
             mv BattleNet-3.png /app/share/icons/hicolor/256x256/apps/BattleNet.png
 
-      # Shell script that creates a BattleNet.desktop file in the correct location
-      - type: shell
-        commands:
-          - |
-            echo "Creating /app/share/applications/BattleNet.desktop file"
-            touch /app/share/applications/BattleNet.desktop
-
-            echo "Writing contents to /app/share/applications/BattleNet.desktop file"
-            echo "[Desktop Entry]
-            Type=Application
-            Name=BattleNet
-            GenericName=BattleNet
-            Comment=Blizzard BattleNet launcher (Flatpak)
-            Exec=BattleNetWrapper
-            Categories=Game;
-            Icon=BattleNet
-            Keywords=Blizzard;BattleNet;Battle.net;Hearthstone;World of Warcraft;StarCraft;Warcraft;Overwatch;Diablo;Heroes of the Storm;Warcraft Rumble" >> /app/share/applications/BattleNet.desktop
-
       # Script that is ran everytime the final Flatpak is ran, which sets up Discord rich presence and then runs the BattleNetSetup.exe with Wine
       - type: script
         commands:
@@ -135,6 +121,9 @@ modules:
       - |
         echo "Installing com.blizzard.BattleNet.metainfo.xml in /app/share/metainfo/"
         install -Dm644 -t /app/share/metainfo/ com.blizzard.BattleNet.metainfo.xml
+
+        echo "Moving BattleNet.desktop to /app/share/applications"
+        mv BattleNet.desktop /app/share/applications
 
         echo "Moving BattleNetSetup.exe to /app/bin"
         mv BattleNetSetup.exe /app/bin
