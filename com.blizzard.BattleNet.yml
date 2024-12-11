@@ -25,6 +25,14 @@ inherit-extensions:
   - org.winehq.WineStaging.gecko
   - org.winehq.WineStaging.mono
   - org.winehq.WineStaging.DLLs
+add-extensions:
+    com.blizzard.BattleNet.Hearthstone:
+      subdirectories: true
+      directory: share
+      # version: stable
+      # versions: stable;beta;test
+      no-autodownload: true
+      autodelete: true
 modules:
   # Icoutils, needed for extracting .ico from BattleNetSetup.exe
   - name: Icoutils
