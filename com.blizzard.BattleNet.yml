@@ -17,6 +17,8 @@ finish-args:
   - --share=network
   - --share=ipc
   - --allow=multiarch
+  - --env=WINEPREFIX=/var/data/WinePrefix # The Wine prefix where Windows files and .exe files are installed
+# - --env=WINEARCH=win32 # Set 32 bit architecture for Wine prefix
 inherit-extensions:
   - org.freedesktop.Platform.Compat.i386
   - org.freedesktop.Platform.GL32
