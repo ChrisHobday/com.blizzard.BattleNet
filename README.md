@@ -16,7 +16,7 @@ flatpak run com.blizzard.BattleNet
 flatpak remove com.blizzard.BattleNet
 ```
 ## Downloading/Cloning this repo
-- Switch the branch to WineStaging, using the dropdown at the top left, then click the green button to download zip and extract once downloaded or clone repo with
+- Click the green button to download zip and extract once downloaded or clone repo with
 ```console
 git clone --recurse-submodules https://github.com/ChrisHobday/com.blizzard.BattleNet
 ```
@@ -30,10 +30,6 @@ flatpak install flathub org.flatpak.Builder
 flatpak install flathub org.freedesktop.Platform//24.08 org.freedesktop.Sdk//24.08
 ```
 - Download and install WineStaging Flatpaks from https://github.com/ChrisHobday/org.winehq.WineStaging/releases (This Flatpak uses them as a base)
-- Switch to WineStaging branch (If you cloned repo) (Run this from within the com.blizzard.BattleNet directory)
-```console
-git checkout WineStaging
-```
 - Build the Flatpak with flatpak-builder (Run this from within the com.blizzard.BattleNet directory)
 ```console
 flatpak run org.flatpak.Builder --force-clean --repo=repo build-dir com.blizzard.BattleNet.yml
