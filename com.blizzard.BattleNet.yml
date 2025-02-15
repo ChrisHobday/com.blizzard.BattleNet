@@ -13,7 +13,8 @@ finish-args:
   - --filesystem=xdg-run/app/com.discordapp.Discord:create # Required for setting up Discord rich presence
   - --filesystem=xdg-run/gamescope-0:ro # Required for Gamescope on Steam Deck
   - --socket=pulseaudio
-  - --socket=x11
+  - --socket=wayland
+  - --socket=fallback-x11
   - --share=network
   - --share=ipc
   - --allow=multiarch
