@@ -86,6 +86,10 @@ modules:
         sha256: 002f33fee7b8a159058368b7e93e492931c4ca72e90660bdb2691bcd62fedd3c
         dest-filename: BattleNetSetup.exe
 
+      # Windows registry file that sets Wine not to lose focus of cursor when clicking outside of the window (needed for Hearthstone)
+      - type: file
+        path: Registry/WineGraphics.reg
+
       # Shell script that extracts BattleNet icon from the BattleNetSetup.exe, converts it to different sized png files and move those to the correct icon locations
       - type: shell
         commands:
@@ -115,6 +119,12 @@ modules:
                 ln -sf {app/com.discordapp.Discord,$XDG_RUNTIME_DIR}/discord-ipc-$i;
             done
 
+            echo "Updating Windows registry with Wine graphics keys"
+            wine regedit /app/share/WineGraphics.reg
+
+            echo "Waiting for registry updates to be applied"
+            sleep 3
+
             echo "Launching BattleNetSetup.exe"
             wine /app/bin/BattleNetSetup.exe
         dest-filename: BattleNetWrapper
@@ -132,3 +142,6 @@ modules:
 
         echo "Moving BattleNetWrapper to /app/bin"
         mv BattleNetWrapper /app/bin
+
+        echo "Moving WineGraphics.reg to /app/share"
+        mv WineGraphics.reg /app/share
