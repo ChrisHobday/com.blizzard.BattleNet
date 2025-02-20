@@ -124,8 +124,8 @@ modules:
         echo "Moving BattleNetSetup.exe to /app/bin"
         mv BattleNetSetup.exe /app/bin
 
-        echo "Moving BattleNetWrapper to /app/bin"
-        mv BattleNetWrapper /app/bin
+        echo "Moving Wrapper to /app/bin"
+        mv Wrapper /app/bin
 
         echo "Moving WineGraphics.reg to /app/share"
         mv WineGraphics.reg /app/share
