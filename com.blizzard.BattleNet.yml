@@ -4,7 +4,7 @@ runtime: org.freedesktop.Platform
 runtime-version: &runtime-version '24.08'
 base: org.winehq.WineStaging
 base-version: stable-24.08
-command: BattleNetWrapper
+command: Wrapper
 rename-desktop-file: BattleNet.desktop
 rename-icon: BattleNet
 finish-args:
@@ -110,24 +110,8 @@ modules:
             mv BattleNet-3.png /app/share/icons/hicolor/256x256/apps/BattleNet.png
 
       # Script that is ran everytime the final Flatpak is ran, which sets up Discord rich presence and then runs the BattleNetSetup.exe with Wine
-      - type: script
-        commands:
-          - |
-            echo "Setting up Discord rich presence"
-            for i in {0..9}; do
-              test -S $XDG_RUNTIME_DIR/discord-ipc-$i ||
-                ln -sf {app/com.discordapp.Discord,$XDG_RUNTIME_DIR}/discord-ipc-$i;
-            done
-
-            echo "Updating Windows registry with Wine graphics keys"
-            wine regedit /app/share/WineGraphics.reg
-
-            echo "Waiting for registry updates to be applied"
-            sleep 3
-
-            echo "Launching BattleNetSetup.exe"
-            wine /app/bin/BattleNetSetup.exe
-        dest-filename: BattleNetWrapper
+      - type: file
+        path: Scripts/Wrapper
 
     build-commands:
       - |

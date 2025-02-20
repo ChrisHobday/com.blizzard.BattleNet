@@ -1,0 +1,15 @@
+#!/bin/sh
+echo "Setting up Discord rich presence"
+for i in {0..9}; do
+    test -S $XDG_RUNTIME_DIR/discord-ipc-$i ||
+    ln -sf {app/com.discordapp.Discord,$XDG_RUNTIME_DIR}/discord-ipc-$i;
+done
+
+echo "Updating Windows registry with Wine graphics keys"
+wine regedit /app/share/WineGraphics.reg
+
+echo "Waiting for registry updates to be applied"
+sleep 3
+
+echo "Launching BattleNetSetup.exe"
+wine /app/bin/BattleNetSetup.exe
