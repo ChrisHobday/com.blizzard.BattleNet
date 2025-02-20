@@ -17,7 +17,7 @@ finish-args:
   - --share=network
   - --share=ipc
   - --allow=multiarch
-  - --env=WINEPREFIX=/var/data/WinePrefix # The Wine prefix where Windows files and .exe files are installed
+  - --env=WINEPREFIX=/var/data/wine # The Wine prefix where Windows files and .exe files are installed
 # - --env=WINEARCH=win32 # Set 32 bit architecture for Wine prefix
 inherit-extensions:
   - org.freedesktop.Platform.Compat.i386
@@ -72,24 +72,6 @@ modules:
   - name: BattleNet
     buildsystem: simple
     sources:
-      # Metadata file for Flatpak repos
-      - type: file
-        path: com.blizzard.BattleNet.metainfo.xml
-
-      # Desktop file
-      - type: file
-        path: BattleNet.desktop
-
-      # The Windows exe that will be ran with wine to install BattleNet (If it is already installed, the exe instead launches BattleNet)
-      - type: file
-        url: https://www.battle.net/download/getInstallerForGame?os=win&version=LIVE&gameProgram=BATTLENET_APP
-        sha256: 002f33fee7b8a159058368b7e93e492931c4ca72e90660bdb2691bcd62fedd3c
-        dest-filename: BattleNetSetup.exe
-
-      # Windows registry file that sets Wine not to lose focus of cursor when clicking outside of the window (needed for Hearthstone)
-      - type: file
-        path: Registry/WineGraphics.reg
-
       # Shell script that extracts BattleNet icon from the BattleNetSetup.exe, converts it to different sized png files and move those to the correct icon locations
       - type: shell
         commands:
@@ -109,23 +91,41 @@ modules:
             echo "Moving BattleNet-3.png to /app/share/icons/hicolor/256x256/apps/BattleNet.png"
             mv BattleNet-3.png /app/share/icons/hicolor/256x256/apps/BattleNet.png
 
+      # Windows registry file that sets Wine not to lose focus of cursor when clicking outside of the window (needed for Hearthstone)
+      - type: file
+        path: Registry/WineGraphics.reg
+
+      # The Windows exe that will be ran with wine to install BattleNet (If it is already installed, the exe instead launches BattleNet)
+      - type: file
+        url: https://www.battle.net/download/getInstallerForGame?os=win&version=LIVE&gameProgram=BATTLENET_APP
+        sha256: 002f33fee7b8a159058368b7e93e492931c4ca72e90660bdb2691bcd62fedd3c
+        dest-filename: BattleNetSetup.exe
+
       # Script that is ran everytime the final Flatpak is ran, which sets up Discord rich presence and then runs the BattleNetSetup.exe with Wine
       - type: file
         path: Scripts/Wrapper
 
+      # Desktop file
+      - type: file
+        path: BattleNet.desktop
+
+      # Metadata file for Flatpak repos
+      - type: file
+        path: com.blizzard.BattleNet.metainfo.xml
+
     build-commands:
       - |
-        echo "Installing com.blizzard.BattleNet.metainfo.xml in /app/share/metainfo/"
-        install -Dm644 -t /app/share/metainfo/ com.blizzard.BattleNet.metainfo.xml
-
-        echo "Moving BattleNet.desktop to /app/share/applications"
-        mv BattleNet.desktop /app/share/applications
+        echo "Moving WineGraphics.reg to /app/share"
+        mv WineGraphics.reg /app/share
 
         echo "Moving BattleNetSetup.exe to /app/bin"
         mv BattleNetSetup.exe /app/bin
 
         echo "Moving Wrapper to /app/bin"
-        mv Wrapper /app/bin
+        install -Dm744 -t /app/bin/ Wrapper
 
-        echo "Moving WineGraphics.reg to /app/share"
-        mv WineGraphics.reg /app/share
+        echo "Moving BattleNet.desktop to /app/share/applications"
+        mv BattleNet.desktop /app/share/applications
+
+        echo "Installing com.blizzard.BattleNet.metainfo.xml in /app/share/metainfo/"
+        install -Dm644 -t /app/share/metainfo/ com.blizzard.BattleNet.metainfo.xml
