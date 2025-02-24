@@ -4,7 +4,7 @@ runtime: org.freedesktop.Platform
 runtime-version: &runtime-version '24.08'
 base: org.winehq.WineStaging
 base-version: stable-24.08
-command: Wrapper
+command: BattleNet
 rename-desktop-file: BattleNet.desktop
 rename-icon: BattleNet
 finish-args:
@@ -95,7 +95,7 @@ modules:
 
       # Script that is ran everytime the final Flatpak is ran, which sets up Discord rich presence and then runs the BattleNetSetup.exe with Wine
       - type: file
-        path: Scripts/Wrapper
+        path: Scripts/BattleNet
 
       # Desktop file
       - type: file
@@ -113,8 +113,8 @@ modules:
         echo "Moving WineGraphics.reg to /app/share"
         mv WineGraphics.reg /app/share
 
-        echo "Moving Wrapper to /app/bin"
-        install -Dm744 -t /app/bin/ Wrapper
+        echo "Moving BattleNet to /app/bin"
+        install -Dm744 -t /app/bin/ BattleNet
 
         echo "Moving BattleNet.desktop to /app/share/applications"
         mv BattleNet.desktop /app/share/applications
