@@ -53,7 +53,7 @@ modules:
         tag: 7.1.1-36
     build-commands:
       - |
-        echo "Configuring and make ImageMagick"
+        echo "Configuring and making ImageMagick"
         ./configure --prefix=${FLATPAK_DEST}
         make
 
@@ -99,7 +99,7 @@ modules:
 
       # Desktop file
       - type: file
-        path: BattleNet.desktop
+        path: DesktopEntries/BattleNet.desktop
 
       # Metadata file for Flatpak repos
       - type: file
@@ -107,17 +107,9 @@ modules:
 
     build-commands:
       - |
-        echo "Moving BattleNetSetup.exe to /app/bin"
-        mv BattleNetSetup.exe /app/bin
-        
-        echo "Moving WineGraphics.reg to /app/share"
-        mv WineGraphics.reg /app/share
-
-        echo "Moving BattleNet to /app/bin"
-        install -Dm744 -t /app/bin/ BattleNet
-
-        echo "Moving BattleNet.desktop to /app/share/applications"
-        mv BattleNet.desktop /app/share/applications
-
-        echo "Installing com.blizzard.BattleNet.metainfo.xml in /app/share/metainfo/"
-        install -Dm644 -t /app/share/metainfo/ com.blizzard.BattleNet.metainfo.xml
+        install -Dm744 BattleNetSetup.exe -t /app/bin
+        install -Dm644 WineGraphics.reg /app/share
+        install -Dm744 BattleNet -t /app/bin/
+        install -Dm644 BattleNet.desktop -t /app/share/applications
+        install -Dm644 com.blizzard.BattleNet.metainfo.xml -t /app/share/metainfo
+        mkdir -p /app/extensions
