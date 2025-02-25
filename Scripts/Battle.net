@@ -1,7 +1,7 @@
 #!/bin/sh
-echo "Checking if BattleNet is already installed"
+echo "Checking if Battle.net is already installed"
 if [ -d "/var/data/wine/drive_c/Program Files (x86)/Battle.net/" ]; then
-  echo "BattleNet is installed"
+  echo "Battle.net is installed"
 
   echo "Setting up Discord rich presence"
   for i in {0..9}; do
@@ -12,10 +12,10 @@ if [ -d "/var/data/wine/drive_c/Program Files (x86)/Battle.net/" ]; then
   echo "Changing directory to /var/data/wine/drive_c/Program Files (x86)/Battle.net/"
   cd /var/data/wine/drive_c/Program\ Files\ \(x86\)/Battle.net/
 
-  echo "Launching BattleNet"
+  echo "Launching Battle.net"
   wine /var/data/wine/drive_c/Program\ Files\ \(x86\)/Battle.net/Battle.net.exe
 else
-  echo "BattleNet is not installed"
+  echo "Battle.net is not installed"
 
   echo "Initializing Wine prefix"
   wineboot -i
@@ -26,6 +26,6 @@ else
   echo "Waiting for registry updates to be applied"
   sleep 3
 
-  echo "Launching BattleNetSetup.exe"
-  wine /app/bin/BattleNetSetup.exe
+  echo "Launching Battle.netSetup.exe"
+  wine /app/bin/Battle.netSetup.exe
 fi

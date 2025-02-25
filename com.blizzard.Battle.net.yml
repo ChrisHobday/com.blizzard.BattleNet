@@ -1,0 +1,63 @@
+app-id: com.blizzard.Battle.net
+sdk: org.freedesktop.Sdk
+runtime: org.freedesktop.Platform
+runtime-version: &runtime-version '24.08'
+base: org.winehq.WineStaging
+base-version: stable-24.08
+rename-desktop-file: Battle.net.desktop
+rename-icon: Battle.net
+command: Battle.net
+finish-args:
+  - --device=all
+  - --filesystem=host:ro
+  - --filesystem=xdg-run/app/com.discordapp.Discord:create # Required for setting up Discord rich presence
+  - --filesystem=xdg-run/gamescope-0:ro # Required for Gamescope on Steam Deck
+  - --socket=pulseaudio
+  - --socket=x11
+  - --share=network
+  - --share=ipc
+  - --allow=multiarch
+  - --env=WINEPREFIX=/var/data/wine # The Wine prefix where Windows files and .exe files are installed
+# - --env=WINEARCH=win32 # Set 32 bit architecture for Wine prefix
+inherit-extensions:
+  - org.freedesktop.Platform.Compat.i386
+  - org.freedesktop.Platform.GL32
+  - org.freedesktop.Platform.ffmpeg-full
+  - org.freedesktop.Platform.ffmpeg_full.i386
+  - org.winehq.WineStaging.gecko
+  - org.winehq.WineStaging.mono
+  - org.winehq.WineStaging.DLLs
+modules:
+  # Battle.net Setup exe, shell scripts that extract and convert Battle.net icon and a script that installs/launches Battle.net
+  - name: Battle.net
+    buildsystem: simple
+    sources:
+      # The Windows exe that will be ran with wine to install Battle.net (If it is already installed, the exe instead launches Battle.net)
+      - type: file
+        url: https://www.battle.net/download/getInstallerForGame?os=win&version=LIVE&gameProgram=BATTLENET_APP
+        sha256: 002f33fee7b8a159058368b7e93e492931c4ca72e90660bdb2691bcd62fedd3c
+        dest-filename: Battle.netSetup.exe
+      # Windows registry file that sets Wine not to lose focus of cursor when clicking outside of the window (needed for Hearthstone)
+      - type: file
+        path: Registry/WineGraphics.reg
+      # Script that is ran everytime the final Flatpak is ran, which sets up Discord rich presence and then runs the Battle.netSetup.exe with Wine
+      - type: file
+        path: Scripts/Battle.net
+      # Desktop file
+      - type: file
+        path: DesktopEntries/Battle.net.desktop
+      # Metadata file for Flatpak repos
+      - type: file
+        path: com.blizzard.Battle.net.metainfo.xml
+      # Icon
+      - type: file
+        path: Icons/Battle.net.png
+    build-commands:
+      - |
+        install -Dm744 Battle.netSetup.exe -t /app/bin
+        install -Dm644 WineGraphics.reg /app/share
+        install -Dm744 Battle.net -t /app/bin/
+        install -Dm644 Battle.net.desktop -t /app/share/applications
+        install -Dm644 com.blizzard.Battle.net.metainfo.xml -t /app/share/metainfo
+        install -Dm644 Battle.net.png -t /app/share/icons/hicolor/256x256/apps
+        mkdir -p /app/extensions
