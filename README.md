@@ -6,7 +6,7 @@ flatpak install org.flatpak.Builder org.freedesktop.Platform//24.08 org.freedesk
 ```console
 flatpak update --subpath= org.freedesktop.Sdk.Locale org.freedesktop.Platform.Locale
 ```
-org.wine.Sdk from https://github.com/ChrisHobday/org.wine.Sdk
+- org.wine.Sdk from https://github.com/ChrisHobday/org.wine.Sdk
 ---
 ## Building
 > **_NOTE:_**  With org.wine.Sdk installed.
