@@ -1,61 +1,93 @@
 app-id: com.blizzard.Battle.net
-sdk: org.freedesktop.Sdk
-runtime: org.freedesktop.Platform
-runtime-version: &runtime-version '24.08'
-base: org.winehq.WineStaging
-base-version: stable-24.08
+branch: stable
+sdk: org.wine.Sdk
+runtime: org.wine.Platform
+runtime-version: '10.5'
 rename-desktop-file: Battle.net.desktop
 rename-icon: Battle.net
 command: Battle.net
 finish-args:
-  - --device=all
-  - --filesystem=host:ro
-  - --filesystem=xdg-run/app/com.discordapp.Discord:create # Required for setting up Discord rich presence
-  - --filesystem=xdg-run/gamescope-0:ro # Required for Gamescope on Steam Deck
-  - --socket=pulseaudio
-  - --socket=x11
-  - --share=network
-  - --share=ipc
-  - --allow=multiarch
-  - --env=WINEPREFIX=/var/data/wine # The Wine prefix where Windows files and .exe files are installed
-# - --env=WINEARCH=win32 # Set 32 bit architecture for Wine prefix
+  - --allow=multiarch                                      # Access to 32bit libraries (For running 32bit executables)
+  # - --allow=devel                                          # Uses full SDK as the runtime (Access to more debugging tools and other libs)
+  # - --allow=bluetooth                                      # Access to bluetooth
+  # - --device=all                                           # Access to all devices
+  - --device=dri                                           # Access to DRI for OpenGL rendering
+  - --device=input                                         # Access to input devices (Controllers, etc)
+  # - --socket=wayland                                       # Access to Wayland socket for display
+  - --socket=fallback-x11                                  # Access to X11 socket for display (Incase wayland doesn't work)
+  - --socket=pulseaudio                                    # Access to pulse audio socket for sound
+  - --share=network                                        # Access to networking
+  - --share=ipc                                            # Access to host IPC namespace
+  - --talk-name=org.freedesktop.ScreenSaver                # Can talk to Screensaver (Allows preventing Screensaver)
+  # - --system-talk-name=org.freedesktop.UDisks2             # Can manage storage devices directly
+  # - --system-talk-name=org.freedesktop.NetworkManager      # Can manage network directly
+  # - --filesystem=host:ro                                   # Read access to common host directories
+  - --filesystem=xdg-run/app/com.discordapp.Discord:create # Read/write access to Discord's running instance (Required for setting up Discord rich presence)
+  - --filesystem=xdg-run/gamescope-0:ro                    # Read access to Gamescope's running instance (Required for Gamescope on Steam Deck)
+  # - --env=WINEARCH=win32                                   # Set Wine to 32bit mode (64bit mode is default)
+  - --env=WINEPREFIX=/var/data/wine                        # Set prefix location
+
 inherit-extensions:
-  - org.freedesktop.Platform.Compat.i386
-  - org.freedesktop.Platform.GL32
-  - org.freedesktop.Platform.ffmpeg-full
-  - org.freedesktop.Platform.ffmpeg_full.i386
-  - org.winehq.WineStaging.gecko
-  - org.winehq.WineStaging.mono
-  - org.winehq.WineStaging.DLLs
+  - org.freedesktop.Platform.Compat.i386       # 32bit Linux compatibility
+  - org.freedesktop.Platform.Compat.i386.Debug # 32bit Linux compatibility debug
+  - org.freedesktop.Platform.GL                # OpenGL
+  - org.freedesktop.Platform.GL32              # 32bit OpenGL
+  - org.freedesktop.Platform.GL32.Debug        # 32bit OpenGL Debug
+  - org.freedesktop.Platform.VAAPI.Intel       # Intel VAAPI
+  - org.freedesktop.Platform.VAAPI.Intel.i386  # 32bit Intel VAAPI
+  - org.freedesktop.Platform.ffmpeg-full       # FFmpeg
+  - org.freedesktop.Platform.ffmpeg_full.i386  # 32bit FFmpeg
+
 modules:
+  # Setting up required stuff
+  - name: Setup
+    buildsystem: simple
+    build-commands:
+      - |
+        # Make directories needed by extensions
+        mkdir -p ${FLATPAK_DEST}/lib/i386-linux-gnu                        # 32bit Linux compatibility
+        mkdir -p ${FLATPAK_DEST}/lib/debug/lib/i386-linux-gnu              # 32bit Linux compatibility debug
+        mkdir -p ${FLATPAK_DEST}/lib/x86_64-linux-gnu/GL                   # OpenGL
+        mkdir -p ${FLATPAK_DEST}/lib/i386-linux-gnu/GL                     # 32bit OpenGL
+        mkdir -p ${FLATPAK_DEST}/lib/debug/lib/i386-linux-gnu/GL           # 32bit OpenGL Debug
+        mkdir -p ${FLATPAK_DEST}/lib/i386-linux-gnu/dri/intel-vaapi-driver # 32bit Intel VAAPI
+        mkdir -p ${FLATPAK_DEST}/lib/ffmpeg                                # FFmpeg
+        mkdir -p ${FLATPAK_DEST}/lib32/ffmpeg                              # 32bit FFmpeg
+
   # Battle.net Setup exe, shell scripts that extract and convert Battle.net icon and a script that installs/launches Battle.net
   - name: Battle.net
-    buildsystem: simple
     sources:
       # The Windows exe that will be ran with wine to install Battle.net (If it is already installed, the exe instead launches Battle.net)
       - type: file
         url: https://www.battle.net/download/getInstallerForGame?os=win&version=LIVE&gameProgram=BATTLENET_APP
         sha256: 002f33fee7b8a159058368b7e93e492931c4ca72e90660bdb2691bcd62fedd3c
         dest-filename: Battle.netSetup.exe
+
       # Windows registry file that sets Wine not to lose focus of cursor when clicking outside of the window (needed for Hearthstone)
       - type: file
         path: Registry/WineGraphics.reg
-      # Script that is ran everytime the final Flatpak is ran, which sets up Discord rich presence and then runs the Battle.netSetup.exe with Wine
+
+      # Script that is ran everytime the final Flatpak is ran
       - type: file
         path: Scripts/Battle.net
+
       # Desktop file
       - type: file
         path: DesktopEntries/Battle.net.desktop
+
       # Metadata file for Flatpak repos
       - type: file
         path: com.blizzard.Battle.net.metainfo.xml
+
       # Icon
       - type: file
         path: Icons/Battle.net.png
+
+    buildsystem: simple
     build-commands:
       - |
         install -Dm744 Battle.netSetup.exe -t /app/bin
-        install -Dm644 WineGraphics.reg /app/share
+        install -Dm644 WineGraphics.reg -t /app/share
         install -Dm744 Battle.net -t /app/bin/
         install -Dm644 Battle.net.desktop -t /app/share/applications
         install -Dm644 com.blizzard.Battle.net.metainfo.xml -t /app/share/metainfo

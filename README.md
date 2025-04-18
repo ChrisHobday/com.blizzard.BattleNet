@@ -32,7 +32,7 @@ flatpak install flathub org.freedesktop.Platform//24.08 org.freedesktop.Sdk//24.
 - Download and install WineStaging Flatpaks from https://github.com/ChrisHobday/org.winehq.WineStaging/releases (This Flatpak uses them as a base)
 - Build the Flatpak with flatpak-builder (Run this from within the com.blizzard.Battle.net directory)
 ```console
-flatpak run org.flatpak.Builder --force-clean --repo=repo build-dir com.blizzard.Battle.net.yml
+flatpak run org.flatpak.Builder build-dir --repo=repo --force-clean com.blizzard.Battle.net.yml
 ```
 ## User installation while building
 - Replace last Building step with
