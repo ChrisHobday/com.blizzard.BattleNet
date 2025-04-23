@@ -1,11 +1,11 @@
-app-id: com.blizzard.Battle.net
+app-id: com.blizzard.BattleNet
 branch: stable
 sdk: org.wine.Sdk
 runtime: org.wine.Platform
 runtime-version: '10.5'
-rename-desktop-file: Battle.net.desktop
-rename-icon: Battle.net
-command: Battle.net
+# rename-desktop-file: BattleNet.desktop
+rename-icon: BattleNet
+command: BattleNet.sh
 finish-args:
   - --allow=multiarch                                      # Access to 32bit libraries (For running 32bit executables)
   # - --allow=devel                                          # Uses full SDK as the runtime (Access to more debugging tools and other libs)
@@ -53,22 +53,16 @@ modules:
         mkdir -p ${FLATPAK_DEST}/lib/i386-linux-gnu/dri/intel-vaapi-driver # 32bit Intel VAAPI
         mkdir -p ${FLATPAK_DEST}/lib/ffmpeg                                # FFmpeg
         mkdir -p ${FLATPAK_DEST}/lib32/ffmpeg                              # 32bit FFmpeg
+        mkdir -p ${FLATPAK_DEST}/extensions
 
-  # Battle.net Setup exe, shell scripts that extract and convert Battle.net icon and a script that installs/launches Battle.net
   - name: Battle.net
     sources:
-      # The Windows exe that will be ran with wine to install Battle.net (If it is already installed, the exe instead launches Battle.net)
-      # - type: file
-      #   url: https://www.battle.net/download/getInstallerForGame?os=win&version=LIVE&gameProgram=BATTLENET_APP
-      #   sha256: 002f33fee7b8a159058368b7e93e492931c4ca72e90660bdb2691bcd62fedd3c
-      #   dest-filename: Battle.netSetup.exe
-
       # Battle.net Setup exe to be ran with Wine (Downloaded to /app/extra when user is installing because of extra-data)
       - type: extra-data
         url: https://www.battle.net/download/getInstallerForGame?os=win&version=LIVE&gameProgram=BATTLENET_APP
         sha256: 002f33fee7b8a159058368b7e93e492931c4ca72e90660bdb2691bcd62fedd3c
         size: 4925568
-        filename: Battle.netSetup.exe
+        filename: BattleNetSetup.exe
 
       # Script that is ran when user is installing, after extra-data is downloaded
       # - type: script
@@ -76,35 +70,31 @@ modules:
       #   commands:
       #     - |
 
-
       # Windows registry file that sets Wine not to lose focus of cursor when clicking outside of the window (needed for Hearthstone)
       - type: file
         path: Registry/WineGraphics.reg
 
-      # Script that is ran everytime the final Flatpak is ran
+      # Script that is ran everytime the final Flatpak starts
       - type: file
-        path: Scripts/Battle.net
+        path: Scripts/BattleNet.sh
 
-      # Desktop file
       - type: file
-        path: DesktopEntries/Battle.net.desktop
+        path: DesktopEntries/com.blizzard.BattleNet.desktop
 
-      # Metadata file for Flatpak repos
       - type: file
-        path: com.blizzard.Battle.net.metainfo.xml
+        path: com.blizzard.BattleNet.metainfo.xml
 
-      # Icon
       - type: file
-        path: Icons/Battle.net.png
+        path: Icons/BattleNet.png
 
     buildsystem: simple
     build-commands:
       - |
-        # install -Dm744 Battle.netSetup.exe -t /app/bin
-        install -Dm644 WineGraphics.reg -t /app/share
-        install -Dm744 Battle.net -t /app/bin/
-        ln -s /app/extra/Battle.netSetup.exe /app/bin/Battle.netSetup.exe # Symlink to BattleNetSetup.exe that is to be downloaded to /app/extra when user is installing)
-        install -Dm644 Battle.net.desktop -t /app/share/applications
-        install -Dm644 com.blizzard.Battle.net.metainfo.xml -t /app/share/metainfo
-        install -Dm644 Battle.net.png -t /app/share/icons/hicolor/256x256/apps
-        mkdir -p /app/extensions
+        # install -Dm744 BattleNetSetup.exe -t ${FLATPAK_DEST}/bin/
+        install -Dm644 WineGraphics.reg -t ${FLATPAK_DEST}/share/
+        install -Dm744 BattleNet.sh -t ${FLATPAK_DEST}/bin/
+        ln -s ${FLATPAK_DEST}/extra/BattleNetSetup.exe ${FLATPAK_DEST}/bin/BattleNetSetup.exe # Symlink to BattleNetSetup.exe that is to be downloaded to /app/extra when user is installing)
+        install -Dm644 com.blizzard.BattleNet.desktop -t ${FLATPAK_DEST}/share/applications/
+        install -Dm644 com.blizzard.BattleNet.metainfo.xml -t ${FLATPAK_DEST}/share/metainfo/
+        install -Dm644 BattleNet.png -t ${FLATPAK_DEST}/share/icons/hicolor/256x256/apps/
+

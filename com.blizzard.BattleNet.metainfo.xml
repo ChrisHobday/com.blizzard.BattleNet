@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <component type="desktop-application">
-  <id>com.blizzard.Battle.net</id>
+  <id>com.blizzard.BattleNet</id>
   
   <name>Battle.net</name>
   <summary>Battle.net (Unofficial)</summary>
@@ -32,5 +32,5 @@
     <release version="1" date="2024-08-09"/>
   </releases>
   
-  <launchable type="desktop-id">com.blizzard.Battle.net.desktop</launchable>
+  <launchable type="desktop-id">com.blizzard.BattleNet.desktop</launchable>
 </component>

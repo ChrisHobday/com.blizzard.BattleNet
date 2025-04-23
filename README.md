@@ -11,23 +11,23 @@ flatpak update --subpath= org.freedesktop.Sdk.Locale org.freedesktop.Platform.Lo
 ## Building
 > **_NOTE:_**  With org.wine.Sdk installed.
 ```console
-flatpak run org.flatpak.Builder build-dir --repo=repo --force-clean com.blizzard.Battle.net.yml
+flatpak run org.flatpak.Builder build-dir --repo=repo --force-clean com.blizzard.BattleNet.yml
 ```
 ---
 ## Installing
 ```console
-flatpak install --user ./repo com.blizzard.Battle.net
+flatpak install --user ./repo com.blizzard.BattleNet
 ```
 ---
 ## Running
 - Launch the Battle.net Flatpak (Either search for the app in your menu and click it) or
 ```console
-flatpak run com.blizzard.Battle.net
+flatpak run com.blizzard.BattleNet
 ```
 ---
 ## Removing
 ```console
-flatpak remove com.blizzard.Battle.net
+flatpak remove com.blizzard.BattleNet
 ```
 ---
 ## Troubleshooting
@@ -37,12 +37,9 @@ flatpak list | grep Battle.net
 ```
 - Enter Flatpak in command line mode
 ```console
-flatpak run --command=sh com.blizzard.Battle.net
+flatpak run --command=sh com.blizzard.BattleNet
 ```
 ## Flatpak locations
-- Installation directory             = /var/lib/flatpak/app/com.blizzard.Battle.net/
-- Installation directory (User mode) = ~/.local/share/flatpak/app/com.blizzard.Battle.net/
-- User cache directory               = ~/.var/app/com.blizzard.Battle.net/cache/
-- User config directory              = ~/.var/app/com.blizzard.Battle.net/config/
-- User data directory                = ~/.var/app/com.blizzard.Battle.net/data/
-- Wine prefix                        = ~/.var/app/com.blizzard.Battle.net/data/WinePrefix
+- Installation directory             = /var/lib/flatpak/app/com.blizzard.BattleNet/
+- Installation directory (User mode) = ~/.local/share/flatpak/app/com.blizzard.BattleNet/
+- Wine prefix                        = ~/.var/app/com.blizzard.BattleNet/data/WinePrefix

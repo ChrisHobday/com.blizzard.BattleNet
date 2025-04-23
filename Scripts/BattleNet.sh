@@ -26,6 +26,6 @@ else
   echo "Waiting for registry updates to be applied"
   sleep 3
 
-  echo "Launching Battle.netSetup.exe"
-  wine /app/bin/Battle.netSetup.exe
+  echo "Launching BattleNetSetup.exe"
+  wine /app/bin/BattleNetSetup.exe
 fi
