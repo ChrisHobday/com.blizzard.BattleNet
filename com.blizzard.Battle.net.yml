@@ -58,10 +58,24 @@ modules:
   - name: Battle.net
     sources:
       # The Windows exe that will be ran with wine to install Battle.net (If it is already installed, the exe instead launches Battle.net)
-      - type: file
+      # - type: file
+      #   url: https://www.battle.net/download/getInstallerForGame?os=win&version=LIVE&gameProgram=BATTLENET_APP
+      #   sha256: 002f33fee7b8a159058368b7e93e492931c4ca72e90660bdb2691bcd62fedd3c
+      #   dest-filename: Battle.netSetup.exe
+
+      # Battle.net Setup exe to be ran with Wine (Downloaded to /app/extra when user is installing because of extra-data)
+      - type: extra-data
         url: https://www.battle.net/download/getInstallerForGame?os=win&version=LIVE&gameProgram=BATTLENET_APP
         sha256: 002f33fee7b8a159058368b7e93e492931c4ca72e90660bdb2691bcd62fedd3c
-        dest-filename: Battle.netSetup.exe
+        size: 4925568
+        filename: Battle.netSetup.exe
+
+      # Script that is ran when user is installing, after extra-data is downloaded
+      # - type: script
+      #   dest-filename: apply_extra
+      #   commands:
+      #     - |
+
 
       # Windows registry file that sets Wine not to lose focus of cursor when clicking outside of the window (needed for Hearthstone)
       - type: file
@@ -86,9 +100,10 @@ modules:
     buildsystem: simple
     build-commands:
       - |
-        install -Dm744 Battle.netSetup.exe -t /app/bin
+        # install -Dm744 Battle.netSetup.exe -t /app/bin
         install -Dm644 WineGraphics.reg -t /app/share
         install -Dm744 Battle.net -t /app/bin/
+        ln -s /app/extra/Battle.netSetup.exe /app/bin/Battle.netSetup.exe # Symlink to BattleNetSetup.exe that is to be downloaded to /app/extra when user is installing)
         install -Dm644 Battle.net.desktop -t /app/share/applications
         install -Dm644 com.blizzard.Battle.net.metainfo.xml -t /app/share/metainfo
         install -Dm644 Battle.net.png -t /app/share/icons/hicolor/256x256/apps
