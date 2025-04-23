@@ -3,8 +3,8 @@ branch: stable
 sdk: org.wine.Sdk
 runtime: org.wine.Platform
 runtime-version: '10.5'
-# rename-desktop-file: BattleNet.desktop
-rename-icon: BattleNet
+# rename-desktop-file: BattleNet.desktop # Not needed because desktop file is already named com.blizzard.BattleNet
+# rename-icon: BattleNet                 # Not needed because icons are already named com.blizzard.BattleNet
 command: BattleNet.sh
 finish-args:
   - --allow=multiarch                                      # Access to 32bit libraries (For running 32bit executables)
@@ -55,6 +55,36 @@ modules:
         mkdir -p ${FLATPAK_DEST}/lib32/ffmpeg                              # 32bit FFmpeg
         mkdir -p ${FLATPAK_DEST}/extensions
 
+        mkdir -p ${FLATPAK_DEST}/share/icons/hicolor/{16x16,24x24,32x32,48x48,64x64,128x128,256x256}/apps # Make needed icon directories
+
+  # Icoutils for extracting icos from exes
+  - name: Icoutils
+    buildsystem: simple
+    sources:
+      - type: archive
+        url: http://savannah.nongnu.org/download/icoutils/icoutils-0.32.3.tar.bz2
+        sha256: 17abe02d043a253b68b47e3af69c9fc755b895db68fdc8811786125df564c6e0
+
+    build-commands:
+      - |
+        ./configure --prefix=${FLATPAK_DEST} # Generate makefile with prefix set to Flatpak root (/app for an App)
+        make -j`nproc --ignore=2`            # Build using the number of available cores minus 2
+        make install
+
+  # ImageMagick for converting icos pngs
+  - name: ImageMagick
+    buildsystem: simple
+    sources:
+      - type: git
+        url: https://github.com/ImageMagick/ImageMagick.git
+        tag: 7.1.1-36
+
+    build-commands:
+      - |
+        ./configure --prefix=${FLATPAK_DEST} # Generate makefile with prefix set to Flatpak root (/app for an App)
+        make -j`nproc --ignore=2`            # Build using the number of available cores minus 2
+        make install
+
   - name: Battle.net
     sources:
       # Battle.net Setup exe to be ran with Wine (Downloaded to /app/extra when user is installing because of extra-data)
@@ -64,11 +94,22 @@ modules:
         size: 4925568
         filename: BattleNetSetup.exe
 
-      # Script that is ran when user is installing, after extra-data is downloaded
-      # - type: script
-      #   dest-filename: apply_extra
-      #   commands:
-      #     - |
+      # Script that is automatically ran when user is installing, after extra-data is downloaded
+      - type: script
+        dest-filename: apply_extra
+        commands:
+          - |
+            wrestool -x --output=BattleNet.ico -t14 BattleNetSetup.exe # Extract ico from exe
+            convert BattleNet.ico BattleNet.png                        # Convert ico to png
+
+            # Move pngs to icons directories
+            install -Dm644 BattleNet-0.png ./export/share/icons/hicolor/128x128/apps/com.blizzard.BattleNet.png
+            install -Dm644 BattleNet-1.png ./export/share/icons/hicolor/16x16/apps/com.blizzard.BattleNet.png
+            install -Dm644 BattleNet-2.png ./export/share/icons/hicolor/24x24/apps/com.blizzard.BattleNet.png
+            install -Dm644 BattleNet-3.png ./export/share/icons/hicolor/256x256/apps/com.blizzard.BattleNet.png
+            install -Dm644 BattleNet-4.png ./export/share/icons/hicolor/32x32/apps/com.blizzard.BattleNet.png
+            install -Dm644 BattleNet-5.png ./export/share/icons/hicolor/48x48/apps/com.blizzard.BattleNet.png
+            install -Dm644 BattleNet-6.png ./export/share/icons/hicolor/64x64/apps/com.blizzard.BattleNet.png
 
       # Windows registry file that sets Wine not to lose focus of cursor when clicking outside of the window (needed for Hearthstone)
       - type: file
@@ -84,17 +125,13 @@ modules:
       - type: file
         path: com.blizzard.BattleNet.metainfo.xml
 
-      - type: file
-        path: Icons/BattleNet.png
-
     buildsystem: simple
     build-commands:
       - |
-        # install -Dm744 BattleNetSetup.exe -t ${FLATPAK_DEST}/bin/
         install -Dm644 WineGraphics.reg -t ${FLATPAK_DEST}/share/
         install -Dm744 BattleNet.sh -t ${FLATPAK_DEST}/bin/
-        ln -s ${FLATPAK_DEST}/extra/BattleNetSetup.exe ${FLATPAK_DEST}/bin/BattleNetSetup.exe # Symlink to BattleNetSetup.exe that is to be downloaded to /app/extra when user is installing)
+        ln -s ${FLATPAK_DEST}/extra/BattleNetSetup.exe ${FLATPAK_DEST}/bin/BattleNetSetup.exe # Symlink to BattleNetSetup.exe that is to be downloaded to /app/extra when user is installs
+        install -Dm744 apply_extra ${FLATPAK_DEST}/bin/apply_extra
         install -Dm644 com.blizzard.BattleNet.desktop -t ${FLATPAK_DEST}/share/applications/
         install -Dm644 com.blizzard.BattleNet.metainfo.xml -t ${FLATPAK_DEST}/share/metainfo/
-        install -Dm644 BattleNet.png -t ${FLATPAK_DEST}/share/icons/hicolor/256x256/apps/
 
