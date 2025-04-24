@@ -55,7 +55,9 @@ modules:
         mkdir -p ${FLATPAK_DEST}/lib32/ffmpeg                              # 32bit FFmpeg
         mkdir -p ${FLATPAK_DEST}/extensions
 
-        mkdir -p ${FLATPAK_DEST}/share/icons/hicolor/{16x16,24x24,32x32,48x48,64x64,128x128,256x256}/apps # Make needed icon directories
+        mkdir -p ${FLATPAK_DEST}/bin # Make directory needed for binaries
+
+        mkdir -p ${FLATPAK_DEST}/share/icons/hicolor/{16x16,24x24,32x32,48x48,64x64,128x128,256x256,scalable}/apps # Make directories needed for icons
 
   # Icoutils for extracting icos from exes
   - name: Icoutils
@@ -87,7 +89,7 @@ modules:
 
   - name: Battle.net
     sources:
-      # Battle.net Setup exe to be ran with Wine (Downloaded to /app/extra when user is installing because of extra-data)
+      # Battle.net setup exe to be ran with Wine (Downloaded to /app/extra when user is installing because of extra-data)
       - type: extra-data
         url: https://www.battle.net/download/getInstallerForGame?os=win&version=LIVE&gameProgram=BATTLENET_APP
         sha256: 002f33fee7b8a159058368b7e93e492931c4ca72e90660bdb2691bcd62fedd3c
@@ -100,9 +102,10 @@ modules:
         commands:
           - |
             wrestool -x --output=BattleNet.ico -t14 BattleNetSetup.exe # Extract ico from exe
-            convert BattleNet.ico BattleNet.png                        # Convert ico to png
+            magick BattleNet.ico BattleNet.png                         # Convert ico to png
+            # magick BattleNet.ico BattleNet.svg                         # Convert ico to svg TODO: Figure out why this doesn't work
 
-            # Move pngs to icons directories
+            # Move images to icon directories
             install -Dm644 BattleNet-0.png ./export/share/icons/hicolor/128x128/apps/com.blizzard.BattleNet.png
             install -Dm644 BattleNet-1.png ./export/share/icons/hicolor/16x16/apps/com.blizzard.BattleNet.png
             install -Dm644 BattleNet-2.png ./export/share/icons/hicolor/24x24/apps/com.blizzard.BattleNet.png
@@ -110,6 +113,7 @@ modules:
             install -Dm644 BattleNet-4.png ./export/share/icons/hicolor/32x32/apps/com.blizzard.BattleNet.png
             install -Dm644 BattleNet-5.png ./export/share/icons/hicolor/48x48/apps/com.blizzard.BattleNet.png
             install -Dm644 BattleNet-6.png ./export/share/icons/hicolor/64x64/apps/com.blizzard.BattleNet.png
+            # install -Dm644 BattleNet.svg ./export/share/icons/hicolor/scalable/apps/com.blizzard.BattleNet.svg
 
       # Windows registry file that sets Wine not to lose focus of cursor when clicking outside of the window (needed for Hearthstone)
       - type: file
@@ -118,6 +122,10 @@ modules:
       # Script that is ran everytime the final Flatpak starts
       - type: file
         path: Scripts/BattleNet.sh
+
+      # Initial icon (For storefront metadata) (Will be replaced with extracted/converted Battle.net image when user installs)
+      - type: file
+        path: Icons/com.blizzard.BattleNet.png
 
       - type: file
         path: DesktopEntries/com.blizzard.BattleNet.desktop
@@ -128,10 +136,11 @@ modules:
     buildsystem: simple
     build-commands:
       - |
+        ln -s ${FLATPAK_DEST}/extra/BattleNetSetup.exe ${FLATPAK_DEST}/bin/BattleNetSetup.exe # Symlink to BattleNetSetup.exe that is to be downloaded to /app/extra when user installs
+        install -Dm744 apply_extra ${FLATPAK_DEST}/bin/
         install -Dm644 WineGraphics.reg -t ${FLATPAK_DEST}/share/
         install -Dm744 BattleNet.sh -t ${FLATPAK_DEST}/bin/
-        ln -s ${FLATPAK_DEST}/extra/BattleNetSetup.exe ${FLATPAK_DEST}/bin/BattleNetSetup.exe # Symlink to BattleNetSetup.exe that is to be downloaded to /app/extra when user is installs
-        install -Dm744 apply_extra ${FLATPAK_DEST}/bin/apply_extra
+        install -Dm644 com.blizzard.BattleNet.png -t ${FLATPAK_DEST}/share/icons/hicolor/256x256/apps/
         install -Dm644 com.blizzard.BattleNet.desktop -t ${FLATPAK_DEST}/share/applications/
         install -Dm644 com.blizzard.BattleNet.metainfo.xml -t ${FLATPAK_DEST}/share/metainfo/
 
