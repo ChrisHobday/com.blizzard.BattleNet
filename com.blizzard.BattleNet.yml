@@ -137,7 +137,7 @@ modules:
     build-commands:
       - |
         ln -s ${FLATPAK_DEST}/extra/BattleNetSetup.exe ${FLATPAK_DEST}/bin/BattleNetSetup.exe # Symlink to BattleNetSetup.exe that is to be downloaded to /app/extra when user installs
-        install -Dm744 apply_extra ${FLATPAK_DEST}/bin/
+        install -Dm744 apply_extra -t ${FLATPAK_DEST}/bin/
         install -Dm644 WineGraphics.reg -t ${FLATPAK_DEST}/share/
         install -Dm744 BattleNet.sh -t ${FLATPAK_DEST}/bin/
         install -Dm644 com.blizzard.BattleNet.png -t ${FLATPAK_DEST}/share/icons/hicolor/256x256/apps/
