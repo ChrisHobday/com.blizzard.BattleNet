@@ -1,5 +1,5 @@
 app-id: com.blizzard.BattleNet
-branch: stable
+# branch: testing                        # Set branch for testing purposes (Default branch is master)
 sdk: org.wine.Sdk
 runtime: org.wine.Platform
 runtime-version: '10.5'

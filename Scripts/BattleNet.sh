@@ -17,10 +17,10 @@ if [ -d "/var/data/wine/drive_c/Program Files (x86)/Battle.net/" ]; then
   echo "Battle.net is installed"
 
   echo "Changing directory to /var/data/wine/drive_c/Program Files (x86)/Battle.net/"
-  cd /var/data/wine/drive_c/Program\ Files\ \(x86\)/Battle.net/
+  cd "/var/data/wine/drive_c/Program Files (x86)/Battle.net/"
 
   echo "Launching Battle.net"
-  wine /var/data/wine/drive_c/Program\ Files\ \(x86\)/Battle.net/Battle.net.exe
+  wine "/var/data/wine/drive_c/Program Files (x86)/Battle.net/Battle.net.exe"
 else
   echo "Battle.net is not installed"
 
