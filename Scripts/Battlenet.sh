@@ -25,5 +25,5 @@ else
   echo "Battle.net is not installed"
 
   echo "Launching Battle.net setup"
-  wine /app/bin/BattleNetSetup.exe
+  wine /app/bin/BattlenetSetup.exe
 fi

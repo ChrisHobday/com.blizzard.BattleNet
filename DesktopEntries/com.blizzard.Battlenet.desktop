@@ -1,0 +1,9 @@
+[Desktop Entry]
+Type=Application
+Name=Battle.net
+GenericName=Battle.net
+Comment=Battle.net (Unofficial)
+Exec=Battlenet.sh
+Categories=Game;
+Icon=com.blizzard.Battlenet
+Keywords=Blizzard;Battlenet;Battle.net;Hearthstone;World of Warcraft;StarCraft;Warcraft;Overwatch;Diablo;Heroes of the Storm;Warcraft Rumble;
