@@ -2,7 +2,7 @@ app-id: com.blizzard.Battlenet
 # branch: testing                        # Set branch for testing purposes (Default branch is master)
 sdk: org.wine.Sdk
 runtime: org.wine.Platform
-runtime-version: '10.7'
+runtime-version: '10.8'
 # rename-desktop-file: Battlenet.desktop # Not needed because desktop file is already named com.blizzard.Battlenet
 # rename-icon: Battlenet                 # Not needed because icons are already named com.blizzard.Battlenet
 command: Battlenet.sh
@@ -136,7 +136,7 @@ modules:
     buildsystem: simple
     build-commands:
       - |
-        ln -s ${FLATPAK_DEST}/extra/BattlenetSetup.exe ${FLATPAK_DEST}/bin/BattlenetSetup.exe          # Symlink to BattlenetSetup.exe that is to be downloaded to /app/extra when user installs
+        ln -s ${FLATPAK_DEST}/extra/BattlenetSetup.exe ${FLATPAK_DEST}/bin/BattlenetSetup.exe          # Symlink to BattlenetSetup.exe that will be downloaded to /app/extra when user installs
         install -Dm744 apply_extra -t ${FLATPAK_DEST}/bin/                                             # Install script that will be ran automatically when user installs after extra-data sources are downloaded
         install -Dm644 WineGraphics.reg -t ${FLATPAK_DEST}/share/                                      # Install Windows registry keys that will be applied to Wine prefix
         install -Dm744 Battlenet.sh -t ${FLATPAK_DEST}/bin/                                            # Install script that will act as the launch command when the Flatpak it is ran

@@ -19,7 +19,7 @@ flatpak remove com.blizzard.Battlenet
 ## Troubleshooting
 - Check if Flatpak is installed
 ```console
-flatpak list | grep Battle.net
+flatpak list | grep Battlenet
 ```
 - Enter Flatpak in command line mode
 ```console
