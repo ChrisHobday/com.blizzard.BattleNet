@@ -23,6 +23,7 @@ finish-args:
   # - --system-talk-name=org.freedesktop.NetworkManager      # Can manage network directly
   # - --filesystem=host:ro                                   # Read access to common host directories
   - --filesystem=xdg-run/app/com.discordapp.Discord:create # Read/write access to Discord's running instance (Required for setting up Discord rich presence)
+  # - --filesystem=xdg-run/discord-ipc-0:create              # Read/Write access to Discord's IPC socket (Required for setting up Discord rich presence)
   - --filesystem=xdg-run/gamescope-0:ro                    # Read access to Gamescope's running instance (Required for Gamescope on Steam Deck)
   # - --env=WINEARCH=win32                                   # Set Wine to 32bit mode (64bit mode is default)
   - --env=WINEPREFIX=/var/data/wine                        # Set prefix location
@@ -59,34 +60,6 @@ modules:
         mkdir -p ${FLATPAK_DEST}/share/applications/                                                               # Make directory for desktop files
         mkdir -p ${FLATPAK_DEST}/share/icons/hicolor/{16x16,24x24,32x32,48x48,64x64,128x128,256x256,scalable}/apps # Make directories needed for icons
 
-  # Icoutils for extracting icos from exes
-  - name: Icoutils
-    sources:
-      - type: archive
-        url: http://savannah.nongnu.org/download/icoutils/icoutils-0.32.3.tar.bz2
-        sha256: 17abe02d043a253b68b47e3af69c9fc755b895db68fdc8811786125df564c6e0
-
-    buildsystem: simple
-    build-commands:
-      - |
-        ./configure --prefix=${FLATPAK_DEST} # Generate makefile with prefix set to Flatpak root (/app for an App)
-        make -j`nproc --ignore=2`            # Build using the number of available cores minus 2
-        make install
-
-  # ImageMagick for converting icos pngs
-  - name: ImageMagick
-    sources:
-      - type: git
-        url: https://github.com/ImageMagick/ImageMagick.git
-        tag: 7.1.1-36
-
-    build-commands:
-      - |
-        ./configure --prefix=${FLATPAK_DEST} # Generate makefile with prefix set to Flatpak root (/app for an App)
-        make -j`nproc --ignore=2`            # Build using the number of available cores minus 2
-        make install
-
-    buildsystem: simple
   - name: Battle.net
     sources:
       # Battle.net setup exe to be ran with Wine (Downloaded to /app/extra when user is installing because of extra-data)
@@ -101,11 +74,11 @@ modules:
         dest-filename: apply_extra
         commands:
           - |
-            wrestool -x --output=Battlenet.ico -t14 BattlenetSetup.exe # Extract ico from exe
-            magick Battlenet.ico Battlenet.png                         # Convert ico to png
+            wrestool -x --output=Battlenet.ico -t14 BattlenetSetup.exe # Extract ico from exe (Uses Icoutils module from org.wine.Sdk)
+            magick Battlenet.ico Battlenet.png                         # Convert ico to png (Uses ImageMagick module from org.wine.Sdk)
             # magick Battlenet.ico Battlenet.svg                         # Convert ico to svg TODO: Figure out why this doesn't work
 
-            # Move images to icon directories
+            # Install Battle.net icons to appropriate directories
             install -Dm644 Battlenet-0.png ./export/share/icons/hicolor/128x128/apps/com.blizzard.Battlenet.png
             install -Dm644 Battlenet-1.png ./export/share/icons/hicolor/16x16/apps/com.blizzard.Battlenet.png
             install -Dm644 Battlenet-2.png ./export/share/icons/hicolor/24x24/apps/com.blizzard.Battlenet.png
@@ -132,7 +105,6 @@ modules:
 
       - type: file
         path: com.blizzard.Battlenet.metainfo.xml
-
     buildsystem: simple
     build-commands:
       - |

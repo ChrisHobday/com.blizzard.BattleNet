@@ -2,6 +2,9 @@
 echo "Running Wineboot"
 wineboot
 
+echo "Setting Windows version to 10"
+winecfg -v win10
+
 echo "Updating registry"
 wine regedit /app/share/WineGraphics.reg
 sleep 3
