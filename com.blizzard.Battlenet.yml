@@ -27,7 +27,6 @@ finish-args:
   - --filesystem=xdg-run/gamescope-0:ro                    # Read access to Gamescope's running instance (Required for Gamescope on Steam Deck)
   # - --env=WINEARCH=win32                                   # Set Wine to 32bit mode (64bit mode is default)
   - --env=WINEPREFIX=/var/data/wine                        # Set prefix location
-
 inherit-extensions:
   - org.freedesktop.Platform.Compat.i386       # 32bit Linux compatibility
   - org.freedesktop.Platform.Compat.i386.Debug # 32bit Linux compatibility debug
@@ -38,7 +37,6 @@ inherit-extensions:
   - org.freedesktop.Platform.VAAPI.Intel.i386  # 32bit Intel VAAPI
   - org.freedesktop.Platform.ffmpeg-full       # FFmpeg
   - org.freedesktop.Platform.ffmpeg_full.i386  # 32bit FFmpeg
-
 modules:
   # Setting up required stuff
   - name: Setup
@@ -78,7 +76,7 @@ modules:
             magick Battlenet.ico Battlenet.png                         # Convert ico to png (Uses ImageMagick module from org.wine.Sdk)
             # magick Battlenet.ico Battlenet.svg                         # Convert ico to svg TODO: Figure out why this doesn't work
 
-            # Install Battle.net icons to appropriate directories
+            # Install icons to appropriate directories
             install -Dm644 Battlenet-0.png ./export/share/icons/hicolor/128x128/apps/com.blizzard.Battlenet.png
             install -Dm644 Battlenet-1.png ./export/share/icons/hicolor/16x16/apps/com.blizzard.Battlenet.png
             install -Dm644 Battlenet-2.png ./export/share/icons/hicolor/24x24/apps/com.blizzard.Battlenet.png
